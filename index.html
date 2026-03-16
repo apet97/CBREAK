@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.clockify.me https://reports.api.clockify.me;">
+  <title>Break Compliance</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <h1>Break Compliance</h1>
+      <div class="header-controls">
+        <div class="control-group">
+          <label for="jurisdiction-select">Jurisdiction</label>
+          <select id="jurisdiction-select">
+            <option value="arbzg">German ArbZG &sect;4</option>
+            <option value="california">California</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="week-select">Week of</label>
+          <input type="date" id="week-select">
+        </div>
+        <button id="generate-btn" class="btn-primary">Check Compliance</button>
+      </div>
+    </header>
+
+    <!-- View toggle -->
+    <div class="view-toggle">
+      <label class="toggle-option">
+        <input type="radio" name="view-toggle" value="pivot" checked>
+        <span>Pivot Table</span>
+      </label>
+      <label class="toggle-option">
+        <input type="radio" name="view-toggle" value="checklist">
+        <span>Checklist</span>
+      </label>
+    </div>
+
+    <!-- Error banner -->
+    <div id="error-banner" class="error-banner" style="display: none;"></div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading" style="display: none;">
+      <div class="loading-spinner"></div>
+      <span>Checking compliance...</span>
+    </div>
+
+    <!-- Results -->
+    <div id="results-container" class="results-container"></div>
+  </div>
+
+  <script type="module" src="js/main.js?v=1"></script>
+</body>
+</html>

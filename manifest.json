@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.3",
+  "key": "break-compliance",
+  "name": "Break Compliance",
+  "baseUrl": "https://breakcheck-worker.petkovic-aleksandar037.workers.dev",
+  "description": "Check break compliance against labor law rules (ArbZG, California, custom).",
+  "minimalSubscriptionPlan": "STANDARD",
+  "scopes": ["TIME_ENTRY_READ", "USER_READ", "REPORTS_READ", "WORKSPACE_READ"],
+  "components": [
+    {
+      "type": "sidebar",
+      "accessLevel": "ADMINS",
+      "path": "/",
+      "label": "Break Compliance"
+    }
+  ],
+  "iconPath": "/icon.svg",
+  "lifecycle": [
+    { "path": "/lifecycle/installed", "type": "INSTALLED" },
+    { "path": "/lifecycle/deleted", "type": "DELETED" }
+  ]
+}

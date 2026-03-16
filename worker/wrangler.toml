@@ -1,0 +1,15 @@
+name = "breakcheck-worker"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+# REPLACE with your own Cloudflare Account ID
+account_id = "568ba06a2d8853d7120970e1e3d8695c"
+
+[vars]
+# REPLACE with your own GitHub Pages origin
+GITHUB_PAGES_ORIGIN = "https://apet97.github.io/breakcheck"
+ENVIRONMENT = "production"
+
+[[kv_namespaces]]
+binding = "SETTINGS_KV"
+# REPLACE with your own KV namespace ID (run: wrangler kv namespace create SETTINGS_KV)
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
