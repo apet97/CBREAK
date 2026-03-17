@@ -14,6 +14,7 @@ export interface ComplianceConfig {
     minWorkMinutes: number;
     requiredBreakMinutes: number;
   }>;
+  defaultDatePreset?: 'today' | 'this_week' | 'last_week' | 'last_2_weeks' | 'last_month' | 'this_year';
 }
 
 export interface ServerConfig {

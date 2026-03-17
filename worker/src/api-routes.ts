@@ -7,6 +7,7 @@ import type { Env, ServerConfig, ComplianceConfig } from './types';
 import { extractAndVerifyJwt, isAdminRole, isWorkspaceAdmin, jsonResponse, errorResponse } from './auth';
 
 const VALID_JURISDICTIONS = ['arbzg', 'california', 'custom'] as const;
+const VALID_DATE_PRESETS = ['today', 'this_week', 'last_week', 'last_2_weeks', 'last_month', 'this_year'] as const;
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -15,6 +16,10 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 function isValidComplianceConfig(v: unknown): v is ComplianceConfig {
   if (!isRecord(v)) return false;
   if (!(VALID_JURISDICTIONS as readonly string[]).includes(v.jurisdiction as string)) return false;
+
+  if (v.defaultDatePreset !== undefined) {
+    if (!(VALID_DATE_PRESETS as readonly string[]).includes(v.defaultDatePreset as string)) return false;
+  }
 
   if (v.customRules !== undefined) {
     if (!Array.isArray(v.customRules)) return false;

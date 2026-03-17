@@ -2,7 +2,7 @@
  * @fileoverview Central application state store.
  */
 
-import type { TokenClaims, ClockifyUser, ComplianceConfig, DayComplianceResult, AppStore } from './types.js';
+import type { TokenClaims, ClockifyUser, ComplianceConfig, DayComplianceResult, AppStore, DatePreset } from './types.js';
 
 const DEFAULT_CONFIG: ComplianceConfig = {
   jurisdiction: 'arbzg',
@@ -16,6 +16,7 @@ export const store: AppStore = {
   results: new Map(),
   loading: false,
   error: null,
+  activePreset: 'this_week' as DatePreset,
 };
 
 export function setToken(token: string): void {
@@ -44,6 +45,10 @@ export function setLoading(loading: boolean): void {
 
 export function setError(error: string | null): void {
   store.error = error;
+}
+
+export function setActivePreset(preset: DatePreset): void {
+  store.activePreset = preset;
 }
 
 export function resetConfig(): void {

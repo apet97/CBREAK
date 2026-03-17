@@ -1,23 +1,24 @@
 /**
  * @fileoverview Per-user daily checklist view showing individual rule results.
+ * Supports arbitrary date ranges.
  */
 
 import type { DayComplianceResult, ClockifyUser } from '../types.js';
-import { escapeHtml, getWeekDates, getDayName, formatMinutes } from '../utils.js';
+import { escapeHtml, getDayName, formatMinutes } from '../utils.js';
 import { getResultsContainer, statusIcon } from './index.js';
 
 /**
  * Renders the per-user daily checklist into the results container.
+ * Accepts an array of date keys (YYYY-MM-DD) for arbitrary date ranges.
  */
 export function renderChecklist(
   results: Map<string, Map<string, DayComplianceResult>>,
   users: ClockifyUser[],
-  weekStartDate: string
+  dateKeys: string[]
 ): void {
   const container = getResultsContainer();
   if (!container) return;
 
-  const weekDates = getWeekDates(new Date(weekStartDate + 'T00:00:00'));
   const sortedUsers = [...users].sort((a, b) => a.name.localeCompare(b.name));
 
   let html = '<div class="checklist-container">';
@@ -30,14 +31,14 @@ export function renderChecklist(
     html += `<h3 class="user-name">${escapeHtml(user.name)}</h3>`;
 
     if (!hasAnyData) {
-      html += '<p class="no-data">No time entries this week.</p>';
+      html += '<p class="no-data">No time entries in this period.</p>';
       html += '</div>';
       continue;
     }
 
     html += '<div class="day-list">';
 
-    for (const date of weekDates) {
+    for (const date of dateKeys) {
       const dayResult = userResults?.get(date);
       if (!dayResult) continue;
 

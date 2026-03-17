@@ -23,12 +23,41 @@
           </select>
         </div>
         <div class="control-group">
-          <label for="week-select">Week of</label>
-          <input type="date" id="week-select">
+          <label for="date-preset-select">Date Range</label>
+          <select id="date-preset-select">
+            <option value="today">Today</option>
+            <option value="this_week" selected>This Week</option>
+            <option value="last_week">Last Week</option>
+            <option value="last_2_weeks">Last 2 Weeks</option>
+            <option value="last_month">Last Month</option>
+            <option value="this_year">This Year</option>
+          </select>
         </div>
         <button id="generate-btn" class="btn-primary">Check Compliance</button>
+        <button id="settings-gear-btn" class="btn-icon" title="Settings" aria-label="Settings" aria-expanded="false" aria-controls="settings-panel">&#9881;</button>
       </div>
     </header>
+
+    <!-- Settings panel -->
+    <section id="settings-panel" class="settings-panel" style="display: none;">
+      <div class="settings-header">
+        <h3>Settings</h3>
+        <button id="settings-close-btn" class="btn-close" aria-label="Close settings">&times;</button>
+      </div>
+      <div class="settings-body">
+        <div class="control-group">
+          <label for="default-preset-select">Default Date Range</label>
+          <select id="default-preset-select">
+            <option value="today">Today</option>
+            <option value="this_week" selected>This Week</option>
+            <option value="last_week">Last Week</option>
+            <option value="last_2_weeks">Last 2 Weeks</option>
+            <option value="last_month">Last Month</option>
+            <option value="this_year">This Year</option>
+          </select>
+        </div>
+      </div>
+    </section>
 
     <!-- View toggle -->
     <div class="view-toggle">

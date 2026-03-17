@@ -2,6 +2,10 @@
  * @fileoverview Type definitions for Break Compliance addon.
  */
 
+// --- Date presets ---
+
+export type DatePreset = 'today' | 'this_week' | 'last_week' | 'last_2_weeks' | 'last_month' | 'this_year';
+
 // --- Jurisdiction & compliance ---
 
 export type Jurisdiction = 'arbzg' | 'california' | 'custom';
@@ -56,6 +60,7 @@ export interface CustomRule {
 export interface ComplianceConfig {
   jurisdiction: Jurisdiction;
   customRules?: CustomRule[];
+  defaultDatePreset?: DatePreset;
 }
 
 // --- Store ---
@@ -90,6 +95,7 @@ export interface AppStore {
   results: Map<string, Map<string, DayComplianceResult>>; // userId -> dateKey -> result
   loading: boolean;
   error: string | null;
+  activePreset: DatePreset;
 }
 
 // --- API ---

@@ -94,6 +94,9 @@ async function build() {
     const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
     if (process.env.MANIFEST_BASE_URL) manifest.baseUrl = process.env.MANIFEST_BASE_URL;
     fs.writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 2));
+    // Also copy as extensionless "manifest" so static servers match
+    // the Worker's /manifest → /manifest.json rewrite
+    fs.copyFileSync('dist/manifest.json', 'dist/manifest');
   }
 
   console.log(`Build complete! Output in dist/`);

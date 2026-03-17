@@ -2,14 +2,16 @@
  * @fileoverview Entry point: JWT parsing, theme, init, report generation.
  */
 
-import type { TokenClaims, DayComplianceResult } from './types.js';
-import { store, setToken, setClaims, setUsers, setConfig, setResults, setLoading, setError, resetConfig } from './state.js';
+import type { TokenClaims, DayComplianceResult, DatePreset } from './types.js';
+import { store, setToken, setClaims, setUsers, setConfig, setResults, setLoading, setError, resetConfig, setActivePreset } from './state.js';
 import { isAllowedClockifyUrl } from './utils.js';
 import { fetchUsers, fetchDetailedReport } from './api.js';
 import { fetchServerConfig } from './settings-api.js';
 import { groupByUserAndDay, evaluateCompliance } from './compliance.js';
+import { getPresetRange, getDateKeysInRange, DEFAULT_PRESET } from './date-presets.js';
 import { renderPivotTable } from './ui/pivot-table.js';
 import { renderChecklist } from './ui/checklist.js';
+import { initSettingsPanel, updateSettingsUI } from './ui/settings-panel.js';
 import { initializeElements, showLoading, showError, hideError } from './ui/index.js';
 
 // --- Token & JWT ---
@@ -197,23 +199,13 @@ export async function handleGenerateReport(): Promise<void> {
   showLoading(true);
 
   try {
-    // Get selected week dates
-    const weekSelect = document.getElementById('week-select') as HTMLInputElement | null;
-    const selectedDate = weekSelect?.value
-      ? new Date(weekSelect.value)
-      : new Date();
-
-    // Calculate Monday and Sunday of the selected week
-    const day = selectedDate.getDay();
-    const mondayOffset = day === 0 ? -6 : 1 - day;
-    const monday = new Date(selectedDate);
-    monday.setDate(monday.getDate() + mondayOffset);
-    const sunday = new Date(monday);
-    sunday.setDate(sunday.getDate() + 6);
-
-    // Format dates for API (ISO format with time)
-    const startDate = `${monday.toISOString().slice(0, 10)}T00:00:00.000Z`;
-    const endDate = `${sunday.toISOString().slice(0, 10)}T23:59:59.999Z`;
+    // Get selected date preset
+    const presetSelect = document.getElementById('date-preset-select') as HTMLSelectElement | null;
+    const activePreset = (presetSelect?.value ?? store.activePreset) as DatePreset;
+    const range = getPresetRange(activePreset);
+    const dateKeys = getDateKeysInRange(range);
+    const startDate = `${range.start}T00:00:00.000Z`;
+    const endDate = `${range.end}T23:59:59.999Z`;
 
     // Fetch users if not already loaded
     if (store.users.length === 0) {
@@ -250,12 +242,10 @@ export async function handleGenerateReport(): Promise<void> {
     const viewToggle = document.querySelector('input[name="view-toggle"]:checked') as HTMLInputElement | null;
     const view = viewToggle?.value ?? 'pivot';
 
-    const mondayStr = monday.toISOString().slice(0, 10);
-
     if (view === 'pivot') {
-      renderPivotTable(results, store.users, mondayStr);
+      renderPivotTable(results, store.users, dateKeys);
     } else {
-      renderChecklist(results, store.users, mondayStr);
+      renderChecklist(results, store.users, dateKeys);
     }
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
@@ -293,15 +283,36 @@ async function init(): Promise<void> {
       resetConfig();
     }
 
+    // Apply default date preset from server config (or fallback)
+    const defaultPreset: DatePreset = store.config.defaultDatePreset ?? DEFAULT_PRESET;
+    setActivePreset(defaultPreset);
+
+    const presetSelect = document.getElementById('date-preset-select') as HTMLSelectElement | null;
+    if (presetSelect) {
+      presetSelect.value = defaultPreset;
+    }
+
     // Update jurisdiction dropdown to reflect loaded config
     const jurisdictionSelect = document.getElementById('jurisdiction-select') as HTMLSelectElement | null;
     if (jurisdictionSelect) {
       jurisdictionSelect.value = store.config.jurisdiction;
     }
 
+    // Init settings panel and sync its UI
+    initSettingsPanel();
+    updateSettingsUI();
+
     // Bind event listeners
     const generateBtn = document.getElementById('generate-btn');
     generateBtn?.addEventListener('click', () => { handleGenerateReport(); });
+
+    // Bind date preset change listener
+    if (presetSelect) {
+      presetSelect.addEventListener('change', () => {
+        setActivePreset(presetSelect.value as DatePreset);
+        handleGenerateReport();
+      });
+    }
 
     const viewToggles = document.querySelectorAll('input[name="view-toggle"]');
     viewToggles.forEach((toggle) => {
