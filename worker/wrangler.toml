@@ -6,7 +6,7 @@ account_id = "568ba06a2d8853d7120970e1e3d8695c"
 
 [vars]
 # REPLACE with your own GitHub Pages origin
-GITHUB_PAGES_ORIGIN = "https://apet97.github.io/breakcheck"
+GITHUB_PAGES_ORIGIN = "https://apet97.github.io/CBREAK"
 ENVIRONMENT = "production"
 
 [[kv_namespaces]]
