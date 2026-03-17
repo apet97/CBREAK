@@ -2,7 +2,7 @@
   "schemaVersion": "1.3",
   "key": "break-compliance",
   "name": "Break Compliance",
-  "baseUrl": "https://f35f-178-221-235-6.ngrok-free.app",
+  "baseUrl": "https://breakcheck-worker.petkovic-aleksandar037.workers.dev",
   "description": "Check break compliance against labor law rules (ArbZG, California, custom).",
   "minimalSubscriptionPlan": "STANDARD",
   "scopes": ["TIME_ENTRY_READ", "USER_READ", "REPORTS_READ", "WORKSPACE_READ"],
