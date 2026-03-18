@@ -5,7 +5,7 @@
 import type { TokenClaims, ClockifyUser, ComplianceConfig, DayComplianceResult, AppStore, DatePreset } from './types.js';
 
 const DEFAULT_CONFIG: ComplianceConfig = {
-  jurisdiction: 'arbzg',
+  jurisdiction: 'custom',
 };
 
 export const store: AppStore = {
@@ -17,6 +17,8 @@ export const store: AppStore = {
   loading: false,
   error: null,
   activePreset: 'this_week' as DatePreset,
+  customRangeStart: null,
+  customRangeEnd: null,
 };
 
 export function setToken(token: string): void {
@@ -49,6 +51,11 @@ export function setError(error: string | null): void {
 
 export function setActivePreset(preset: DatePreset): void {
   store.activePreset = preset;
+}
+
+export function setCustomRange(start: string | null, end: string | null): void {
+  store.customRangeStart = start;
+  store.customRangeEnd = end;
 }
 
 export function resetConfig(): void {

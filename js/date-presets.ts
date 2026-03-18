@@ -12,6 +12,7 @@ export const DATE_PRESET_LABELS: Record<DatePreset, string> = {
   last_2_weeks: 'Last 2 Weeks',
   last_month: 'Last Month',
   this_year: 'This Year',
+  custom_range: 'Custom Range',
 };
 
 export const ALL_PRESETS: DatePreset[] = [
@@ -21,6 +22,7 @@ export const ALL_PRESETS: DatePreset[] = [
   'last_2_weeks',
   'last_month',
   'this_year',
+  'custom_range',
 ];
 
 export const DEFAULT_PRESET: DatePreset = 'this_week';

@@ -4,7 +4,7 @@
 
 // --- Date presets ---
 
-export type DatePreset = 'today' | 'this_week' | 'last_week' | 'last_2_weeks' | 'last_month' | 'this_year';
+export type DatePreset = 'today' | 'this_week' | 'last_week' | 'last_2_weeks' | 'last_month' | 'this_year' | 'custom_range';
 
 // --- Jurisdiction & compliance ---
 
@@ -96,6 +96,8 @@ export interface AppStore {
   loading: boolean;
   error: string | null;
   activePreset: DatePreset;
+  customRangeStart: string | null;
+  customRangeEnd: string | null;
 }
 
 // --- API ---

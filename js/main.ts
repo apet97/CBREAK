@@ -3,12 +3,12 @@
  */
 
 import type { TokenClaims, DayComplianceResult, DatePreset } from './types.js';
-import { store, setToken, setClaims, setUsers, setConfig, setResults, setLoading, setError, resetConfig, setActivePreset } from './state.js';
-import { isAllowedClockifyUrl } from './utils.js';
+import { store, setToken, setClaims, setUsers, setConfig, setResults, setLoading, setError, resetConfig, setActivePreset, setCustomRange } from './state.js';
+import { isAllowedClockifyUrl, toDateKey } from './utils.js';
 import { fetchUsers, fetchDetailedReport } from './api.js';
 import { fetchServerConfig } from './settings-api.js';
 import { groupByUserAndDay, evaluateCompliance } from './compliance.js';
-import { getPresetRange, getDateKeysInRange, DEFAULT_PRESET } from './date-presets.js';
+import { getPresetRange, getDateKeysInRange, DEFAULT_PRESET, type DatePresetRange } from './date-presets.js';
 import { renderPivotTable } from './ui/pivot-table.js';
 import { renderChecklist } from './ui/checklist.js';
 import { initSettingsPanel, updateSettingsUI } from './ui/settings-panel.js';
@@ -202,7 +202,30 @@ export async function handleGenerateReport(): Promise<void> {
     // Get selected date preset
     const presetSelect = document.getElementById('date-preset-select') as HTMLSelectElement | null;
     const activePreset = (presetSelect?.value ?? store.activePreset) as DatePreset;
-    const range = getPresetRange(activePreset);
+
+    let range: DatePresetRange;
+    if (activePreset === 'custom_range') {
+      const startInput = document.getElementById('custom-start-date') as HTMLInputElement | null;
+      const endInput = document.getElementById('custom-end-date') as HTMLInputElement | null;
+      const startVal = startInput?.value || store.customRangeStart;
+      const endVal = endInput?.value || store.customRangeEnd;
+      if (!startVal || !endVal) {
+        showError('Please select both start and end dates.');
+        setLoading(false);
+        showLoading(false);
+        return;
+      }
+      if (startVal > endVal) {
+        showError('Start date must be before or equal to end date.');
+        setLoading(false);
+        showLoading(false);
+        return;
+      }
+      range = { start: startVal, end: endVal };
+    } else {
+      range = getPresetRange(activePreset);
+    }
+
     const dateKeys = getDateKeysInRange(range);
     const startDate = `${range.start}T00:00:00.000Z`;
     const endDate = `${range.end}T23:59:59.999Z`;
@@ -307,12 +330,40 @@ async function init(): Promise<void> {
     generateBtn?.addEventListener('click', () => { handleGenerateReport(); });
 
     // Bind date preset change listener
+    const customRangeInputs = document.getElementById('custom-range-inputs');
     if (presetSelect) {
       presetSelect.addEventListener('change', () => {
         setActivePreset(presetSelect.value as DatePreset);
-        handleGenerateReport();
+        if (customRangeInputs) {
+          customRangeInputs.style.display = presetSelect.value === 'custom_range' ? 'block' : 'none';
+        }
+        if (presetSelect.value !== 'custom_range') {
+          handleGenerateReport();
+        }
       });
     }
+
+    // Bind custom date input listeners
+    const customStartDate = document.getElementById('custom-start-date') as HTMLInputElement | null;
+    const customEndDate = document.getElementById('custom-end-date') as HTMLInputElement | null;
+
+    if (customStartDate && customEndDate) {
+      const today = new Date();
+      const weekAgo = new Date();
+      weekAgo.setDate(today.getDate() - 6);
+      customStartDate.value = toDateKey(weekAgo);
+      customEndDate.value = toDateKey(today);
+    }
+
+    function onCustomDateChange(): void {
+      if (customStartDate?.value && customEndDate?.value) {
+        setCustomRange(customStartDate.value, customEndDate.value);
+        handleGenerateReport();
+      }
+    }
+
+    customStartDate?.addEventListener('change', onCustomDateChange);
+    customEndDate?.addEventListener('change', onCustomDateChange);
 
     const viewToggles = document.querySelectorAll('input[name="view-toggle"]');
     viewToggles.forEach((toggle) => {

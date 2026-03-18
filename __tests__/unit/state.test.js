@@ -50,7 +50,7 @@ describe('state store', () => {
   test('resetConfig restores default jurisdiction', () => {
     setConfig({ jurisdiction: 'california' });
     resetConfig();
-    expect(store.config.jurisdiction).toBe('arbzg');
+    expect(store.config.jurisdiction).toBe('custom');
   });
 
   test('setResults updates results map', () => {

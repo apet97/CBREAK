@@ -31,7 +31,20 @@
             <option value="last_2_weeks">Last 2 Weeks</option>
             <option value="last_month">Last Month</option>
             <option value="this_year">This Year</option>
+            <option value="custom_range">Custom Range</option>
           </select>
+        </div>
+        <div id="custom-range-inputs" class="control-group custom-range-group" style="display: none;">
+          <div class="date-range-row">
+            <div class="date-input-group">
+              <label for="custom-start-date">From</label>
+              <input type="date" id="custom-start-date">
+            </div>
+            <div class="date-input-group">
+              <label for="custom-end-date">To</label>
+              <input type="date" id="custom-end-date">
+            </div>
+          </div>
         </div>
         <button id="generate-btn" class="btn-primary">Check Compliance</button>
         <button id="settings-gear-btn" class="btn-icon" title="Settings" aria-label="Settings" aria-expanded="false" aria-controls="settings-panel">&#9881;</button>
@@ -41,21 +54,13 @@
     <!-- Settings panel -->
     <section id="settings-panel" class="settings-panel" style="display: none;">
       <div class="settings-header">
-        <h3>Settings</h3>
+        <h3>Custom Rules</h3>
         <button id="settings-close-btn" class="btn-close" aria-label="Close settings">&times;</button>
       </div>
       <div class="settings-body">
-        <div class="control-group">
-          <label for="default-preset-select">Default Date Range</label>
-          <select id="default-preset-select">
-            <option value="today">Today</option>
-            <option value="this_week" selected>This Week</option>
-            <option value="last_week">Last Week</option>
-            <option value="last_2_weeks">Last 2 Weeks</option>
-            <option value="last_month">Last Month</option>
-            <option value="this_year">This Year</option>
-          </select>
-        </div>
+        <p class="settings-description">Define break requirements by work duration threshold.</p>
+        <div id="custom-rules-list" class="custom-rules-list"></div>
+        <button id="add-rule-btn" class="btn-secondary">+ Add Rule</button>
       </div>
     </section>
 
