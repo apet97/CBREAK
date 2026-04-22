@@ -179,39 +179,13 @@ The `reportsUrl` comes from JWT claims (separate host from `backendUrl`). The re
 
 ## CI (GitHub Actions)
 
-Create `.github/workflows/ci.yml`:
+CI is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) and runs on every push and PR to `main`. It runs:
 
-```yaml
-name: CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run build:prod
-
-  worker-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: cd worker && npm ci && npm test
-```
+- `quality` — `npm ci` + `npm run typecheck`
+- `test` — `npm ci` + `npm test`
+- `build` — `npm ci` + `npm run build`, uploads `dist/` artifact
+- `deploy` — publishes `dist/` to GitHub Pages (main branch only)
+- `deploy-worker` — `wrangler deploy` the Cloudflare Worker (main branch only, requires `CLOUDFLARE_API_TOKEN` secret)
 
 ## Security
 
